@@ -43,11 +43,21 @@ if !exists('g:minimap_base_matchid')
 endif
 
 if !exists('g:minimap_highlight')
-    let g:minimap_highlight = 'Title'
+    hi MinmapCursor cterm=bold,underline ctermbg=none ctermfg=green
+    let g:minimap_highlight = 'MinmapCursor'
+endif
+
+if !exists('g:minimap_search_highlight')
+    hi MinmapSearch cterm=bold ctermbg=none ctermfg=blue
+    let g:minimap_search_highlight = 'MinmapSearch'
 endif
 
 if !exists('g:minimap_cursorline_matchid')
     let g:minimap_cursorline_matchid = 9265455
+endif
+
+if !exists('g:minimap_search_matchid')
+    let g:minimap_search_matchid = 9265456
 endif
 
 if !exists('g:minimap_block_filetypes')

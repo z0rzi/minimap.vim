@@ -353,6 +353,31 @@ function! s:highlight_line(winid, pos) abort
     call matchadd(g:minimap_highlight, '\%' . a:pos . 'l', 100, g:minimap_cursorline_matchid, { 'window': a:winid })
 endfunction
 
+function! minimap#vim#HighlightSearch() abort
+    let mmwinnr = bufwinnr('-MINIMAP-')
+    if mmwinnr == -1
+        return
+    endif
+
+    if winnr() == mmwinnr
+        return
+    endif
+
+    let winid = win_getid(mmwinnr)
+    " let lines = system('/bin/rg ' . expand('@/') . ' ' . expand('%'))
+    let lines = system("awk '/" . @/ . "/ {print FNR}' " . expand('%'))
+
+    let rx = []
+    for line in split(lines)
+        let total = line('$')
+        let mmheight = getwininfo(winid)[0].botline
+        let pos = float2nr(1.0 * (line-1) / total * mmheight) + 1
+        call add(rx, '\%'.pos.'l')
+    endfor
+    silent! call matchdelete(g:minimap_search_matchid, winid) " require vim 8.1.1084+ or neovim 0.5.0+
+    call matchadd(g:minimap_search_highlight, join(rx, '\|'), 1, g:minimap_search_matchid, { 'window': winid })
+endfunction
+
 function! s:minimap_move() abort
     let mmwinnr = winnr()
     let curr = line('.')
